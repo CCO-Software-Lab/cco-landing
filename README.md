@@ -1,9 +1,9 @@
 # C.C.O Software Lab — landing page
 
 Landing page oficial da C.C.O Software Lab: SaaS, automações, aplicativos
-mobile e sistemas desktop.
+mobile e sistemas desktop
 
-Vite + React + Tailwind CSS v4. Tema claro, sem dependências de UI.
+Vite + React + Tailwind CSS v4. Tema claro, sem dependências de UI
 
 ## Rodar
 
