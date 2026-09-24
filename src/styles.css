@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   C.C.O Software Lab — sistema visual
+   Papel técnico claro, azuis da marca como estrutura e um único acento
+   quente (amarelo-sinal) gasto em quatro lugares na página inteira.
+   Versão clara assumida por decisão: a paleta é pintada explicitamente,
+   sem depender do tema do host.
+   --------------------------------------------------------------- */
+@theme {
+  /* Azuis retirados da marca C.C.O + amarelo-sinal como único acento quente */
+  --color-paper: #f2f5f7;
+  --color-paper-2: #e4ebef;
+  --color-surface: #ffffff;
+  --color-ink: #0b1a26;
+  --color-ink-soft: #1d3a4d;
+  --color-muted: #55697a;
+  --color-rule: #d2dde4;
+  --color-rule-soft: #e5ecf0;
+  --color-navy: #0f3d5c;
+  --color-azure: #0b8fd4;
+  --color-azure-deep: #0a6fa8;
+  --color-cyan: #22c3de;
+  --color-signal: #e9e23d;
+
+  --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-rule);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+    line-height: 0.98;
+  }
+}
+
+@layer components {
+  /* Régua hairline que estrutura a página inteira */
+  .rule-t { border-top: 1px solid var(--color-rule); }
+  .rule-b { border-bottom: 1px solid var(--color-rule); }
+  .rule-l { border-left: 1px solid var(--color-rule); }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Bloco de destaque: o acento vai atrás da palavra, nunca no texto.
+     Como os títulos usam line-height menor que 1, o fundo de um inline
+     comum (que ocupa a caixa da fonte inteira, ~1,41em) invadiria a linha
+     de cima. Por isso a faixa é pintada em gradiente, com altura controlada
+     em porcentagem da própria caixa da fonte: começa logo acima da maiúscula
+     (27,6% no stack usado) e termina pouco abaixo da linha de base (78%). */
+  .mark {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 20%,
+      var(--color-signal) 20%,
+      var(--color-signal) 82%,
+      transparent 82%
+    );
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 0 0.14em;
+    margin: 0 -0.06em;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-ink);
+    transition: transform 0.18s var(--ease-out-soft), background-color 0.18s,
+      color 0.18s, box-shadow 0.18s;
+  }
+  .btn-primary { background: var(--color-signal); color: var(--color-ink); }
+  .btn-primary:hover { box-shadow: 4px 4px 0 var(--color-navy); transform: translate3d(-2px, -2px, 0); }
+  .btn-ghost { background: transparent; color: var(--color-ink); }
+  .btn-ghost:hover { background: var(--color-ink); color: var(--color-paper); }
+
+  /* Papel milimetrado — desenhado em gradiente, custo zero de imagem */
+  .grid-paper {
+    background-image:
+      linear-gradient(to right, var(--color-rule-soft) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-rule-soft) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Movimento — só opacity e transform, sempre em camada composta.
+   Cada elemento revelado sai do observer e devolve o will-change.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .rv {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    transition:
+      opacity 0.7s var(--ease-out-soft),
+      transform 0.7s var(--ease-out-soft);
+    transition-delay: var(--d, 0ms);
+    will-change: transform, opacity;
+  }
+  .rv-left  { transform: translate3d(-28px, 0, 0); }
+  .rv-right { transform: translate3d(28px, 0, 0); }
+  .rv-scale { transform: scale(0.965); }
+  .rv-in {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  /* Linhas de título que sobem por trás de uma máscara */
+  .line-mask { overflow: hidden; display: block; }
+  .line-mask > span {
+    display: block;
+    transform: translate3d(0, 105%, 0);
+    transition: transform 0.85s var(--ease-out-soft);
+    transition-delay: var(--d, 0ms);
+    will-change: transform;
+  }
+  .rv-in .line-mask > span,
+  .line-mask.rv-in > span { transform: none; will-change: auto; }
+
+  .marquee-track {
+    animation: marquee 34s linear infinite;
+    will-change: transform;
+  }
+  @keyframes marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
+
+  .bar-fill { animation: fill 1.6s var(--ease-out-soft) 0.9s both; }
+  @keyframes fill {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  .pulse-dot { animation: pulse 2.4s var(--ease-out-soft) infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.25; }
+  }
+}
+
